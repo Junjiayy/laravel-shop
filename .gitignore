@@ -17,3 +17,4 @@ _ide_helper_models.php
 */.DS_Store
 .DS_Store
 /public/uploads/
+/public/mix-manifest.json
