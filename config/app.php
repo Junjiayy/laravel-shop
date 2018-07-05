@@ -228,4 +228,8 @@ return [
 
     ],
 
+    /**
+     * 工厂语言本地化
+     */
+    'faker_locale' => 'zh_CN',
 ];
