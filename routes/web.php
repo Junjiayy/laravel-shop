@@ -11,7 +11,8 @@
 |
 */
 
-Route::get('/', 'PagesController@root')->name('root');
+Route::redirect('/', '/products')->name('root');
+Route::get('products', 'ProductsController@index')->name('products.index');
 
 Auth::routes();
 /* 用户登录后可执行操作路由 */
