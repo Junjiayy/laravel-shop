@@ -79,6 +79,12 @@ class ProductsController extends Controller
         return view('products.show', ['product' => $product , 'favored' => $favored]);
     }
 
+    /**
+     * 用户手收藏商品
+     * @param Product $product
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function favor(Product $product, Request $request)
     {
         $user = $request->user();
@@ -91,11 +97,24 @@ class ProductsController extends Controller
         return response()->json();
     }
 
+    /**
+     * 用户取消收藏商品
+     * @param Product $product
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function disfavor(Product $product, Request $request)
     {
         $user = $request->user();
         $user->favoriteProducts()->detach($product);
 
         return response()->json();
+    }
+
+    public function favorites(Request $request)
+    {
+        $products = $request->user()->favoriteProducts()->paginate(16);
+
+        return view('products.favorites', ['products' => $products]);
     }
 }
