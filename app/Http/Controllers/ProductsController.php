@@ -6,6 +6,10 @@ use App\Exceptions\InvalidRequestException;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
+/**
+ * Class ProductsController
+ * @package App\Http\Controllers
+ */
 class ProductsController extends Controller
 {
     /**
@@ -53,6 +57,13 @@ class ProductsController extends Controller
         ]);
     }
 
+    /**
+     * 显示某一个商品的详情
+     * @param Product $product
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws InvalidRequestException
+     */
     public function show(Product $product, Request $request)
     {
         // 判断商品是否已经上架，如果没有上架则抛出异常。
@@ -60,6 +71,31 @@ class ProductsController extends Controller
             throw new InvalidRequestException('商品未上架');
         }
 
-        return view('products.show', ['product' => $product]);
+        $favored = false;
+        if($user = $request->user()) {
+            $favored = boolval($user->favoriteProducts()->find($product->id));
+        }
+
+        return view('products.show', ['product' => $product , 'favored' => $favored]);
+    }
+
+    public function favor(Product $product, Request $request)
+    {
+        $user = $request->user();
+        if ($user->favoriteProducts()->find($product->id)) {
+            return response()->json();
+        }
+
+        $user->favoriteProducts()->attach($product);
+
+        return response()->json();
+    }
+
+    public function disfavor(Product $product, Request $request)
+    {
+        $user = $request->user();
+        $user->favoriteProducts()->detach($product);
+
+        return response()->json();
     }
 }
